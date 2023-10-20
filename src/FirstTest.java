@@ -9,6 +9,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import java.util.List;
 
 
 import java.net.URL;
@@ -179,6 +180,57 @@ public class FirstTest {
                  10
          );
 
+     }
+
+     //Ex3: Тест: отмена поиска
+     @Test
+     public void testSearchDisappeared() {
+         waitForElementAndClick(
+                 By.xpath("//*[contains(@text, 'Пропустить')]"),
+                 "Cannot find 'Пропустить'",
+                 5
+         );
+
+         waitForElementAndClick(
+                 By.xpath("//android.widget.TextView[@text='Поиск по Википедии']"),
+                 "Cannot find search input",
+                 10
+         );
+
+         waitForElementAndSendKeys(
+                 By.xpath("//android.widget.EditText[@text='Поиск по Википедии']"),
+                 "Moskow",
+                 "Cannot find 'Moskow'",
+                 10
+         );
+
+         waitForElementPresent(
+                 By.xpath("//android.widget.TextView[@resource-id='org.wikipedia:id/page_list_item_title']"),
+                 "Cannot find articles",
+                 5
+         );
+
+         List<WebElement> searchResults = driver.findElements(By.xpath("//android.widget.TextView[@resource-id='org.wikipedia:id/page_list_item_title']"));
+         Assert.assertTrue("Less than two articles found", searchResults.size() >= 2);
+
+
+         waitForElementAndClick(
+                 By.id("org.wikipedia:id/search_src_text"),
+                 "Cannot find search input",
+                 10
+         );
+
+         waitForElementAndClear(
+                 By.id("org.wikipedia:id/search_src_text"),
+                 "Cannot find search field",
+                 5
+         );
+
+         waitForElementNotPresent(
+                 By.id("org.wikipedia:id/page_list_item_title"),
+                 "Articles is still present on the page",
+                 15
+         );
      }
 
 
