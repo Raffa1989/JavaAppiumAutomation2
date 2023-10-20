@@ -233,6 +233,37 @@ public class FirstTest {
          );
      }
 
+     //Ex4*: Тест: проверка слов в поиске
+     @Test
+     public void testCheckingWordsInSearch() {
+         waitForElementAndClick(
+                 By.xpath("//*[contains(@text, 'Пропустить')]"),
+                 "Cannot find 'Пропустить'",
+                 5
+         );
+
+         waitForElementAndClick(
+                 By.xpath("//android.widget.TextView[@text='Поиск по Википедии']"),
+                 "Cannot find search input",
+                 10
+         );
+
+         waitForElementAndSendKeys(
+                 By.xpath("//android.widget.EditText[@text='Поиск по Википедии']"),
+                 "Java",
+                 "Cannot find 'Java'",
+                 10
+         );
+
+         List<WebElement> searchResults = driver.findElements(By.id("page_list_item_title"));
+         for (WebElement result : searchResults){
+             String resultText = result.getText();
+             Assert.assertTrue("Слово 'Java' не найдено в результатах поиска", resultText.contains("Java"));
+         }
+
+
+     }
+
 
 
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds)
