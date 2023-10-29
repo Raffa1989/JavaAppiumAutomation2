@@ -1,10 +1,13 @@
+import com.sun.jna.platform.win32.WinDef;
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -260,9 +263,299 @@ public class FirstTest {
              String resultText = result.getText();
              Assert.assertTrue("Слово 'Java' не найдено в результатах поиска", resultText.contains("Java"));
          }
-
-
      }
+
+    @Test
+    public void testSwipeArticle() {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Пропустить')]"),
+                "Cannot find 'Пропустить'",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@text='Поиск по Википедии']"),
+                "Cannot find search input",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@text='ENGLISH']"),
+                "Cannot button ENGLISH",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//android.widget.EditText[@text='Поиск по Википедии']"),
+                "Appium",
+                "Cannot find search input 2",
+                10
+        );
+
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_title'][@text='Appium']"),
+                "Cannot find search input",
+                5
+        );
+
+        swipeUpToFindElement(
+                By.xpath("//*[@text='View article in browser']"),
+                "Cannot find the end of the article",
+                20
+        );
+    }
+
+    // получилось довольно много действий, так как приложение уже не такое как в уроке
+    @Test
+    public void saveFirstArticleToMyList()
+    {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Пропустить')]"),
+                "Cannot find 'Пропустить'",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@text='Поиск по Википедии']"),
+                "Cannot find search input",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//android.widget.EditText[@text='Поиск по Википедии']"),
+                "Java",
+                "Cannot find search input 2",
+                10
+        );
+
+        // название статьи состоит из двух строк. одна "Java", вторая "язык программирования"
+        // взяла для теста вторую строку
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='язык программирования']"),
+                "Cannot find search input",
+                5
+        );
+
+        waitForElementPresent(
+                By.id("pcs-edit-section-title-description"),
+                "Cannot find article title",
+                15
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@text='Сохранить']"),
+                "Cannot find button to open article options",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.Button[@text='Добавить в список']"),
+                "Cannot find button to add article",
+                5
+        );
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/text_input"),
+                "Cannot find input field to set name",
+                5
+        );
+
+        waitForElementAndClear(
+                By.id("org.wikipedia:id/text_input"),
+                "Cannot find input field to set name 2",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.id("org.wikipedia:id/text_input"),
+                "Learning programming",
+                "Cannot put text into articles folder into",
+                5
+        );
+
+        waitForElementAndClick(
+                By.id("android:id/button1"),
+                "Cannot button OK",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.ImageButton[@content-desc='Перейти вверх']"),
+                "Cannot find 'Перейти вверх'",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.ImageButton[@content-desc='Перейти вверх']"),
+                "Cannot find 'Перейти вверх' 2",
+                5
+        );
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/nav_tab_reading_lists"),
+                "Cannot find reading lists",
+                5
+        );
+
+        swipeUpToFindElement(
+                By.xpath("//*[@text='Learning programming']"),
+                "Cannot find the list",
+                20
+        );
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/item_title"),
+                "Cannot find item title",
+                5
+        );
+
+        swipeElementToLeft(
+                By.xpath("//*[@text='Java']"),
+                "Cannot find saved article"
+        );
+
+        waitForElementNotPresent(
+                By.xpath("//*[@text='Java']"),
+                "Cannot find deleted safe article",
+                5
+        );
+
+    }
+
+    // Ex5: Тест: сохранение двух статей
+    @Test
+    public void saveTwoArticlesToMyList()
+    {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Пропустить')]"),
+                "Cannot find 'Пропустить'",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@text='Поиск по Википедии']"),
+                "Cannot find search input",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//android.widget.EditText[@text='Поиск по Википедии']"),
+                "Java",
+                "Cannot find search input 2",
+                10
+        );
+
+        // название статьи состоит из двух строк. одна "Java", вторая "язык программирования"
+        // взяла для теста вторую строку
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='язык программирования']"),
+                "Cannot find search input",
+                5
+        );
+
+        waitForElementPresent(
+                By.id("pcs-edit-section-title-description"),
+                "Cannot find article title",
+                15
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@text='Сохранить']"),
+                "Cannot find button to open article options",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.Button[@text='Добавить в список']"),
+                "Cannot find button to add article",
+                5
+        );
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/text_input"),
+                "Cannot find input field to set name",
+                5
+        );
+
+        waitForElementAndClear(
+                By.id("org.wikipedia:id/text_input"),
+                "Cannot find input field to set name 2",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.id("org.wikipedia:id/text_input"),
+                "Learning programming",
+                "Cannot put text into articles folder into",
+                5
+        );
+
+        waitForElementAndClick(
+                By.id("android:id/button1"),
+                "Cannot button OK",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@text='JavaScript']"),
+                        "Cannot find text JavaScript",
+                        5
+        );
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/link_preview_overflow_button"),
+                "Cannot find overflow button",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@text='Добавить в список для чтения']"),
+                "Cannot find button to add article",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@text='Learning programming']"),
+                "Cannot find list Learning programming",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.Button[@text='Посмотреть список']"),
+                "Cannot find button see list",
+                5
+        );
+
+        swipeElementToLeft(
+                By.xpath("//*[@text='Java']"),
+                "Cannot find saved article"
+        );
+
+        waitForElementNotPresent(
+                By.xpath("//*[@text='Java']"),
+                "Cannot find deleted safe article",
+                5
+        );
+
+        waitForElementPresent(
+                By.xpath("//*[@text='JavaScript']"),
+                "Cannot find article about JavaScript",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@text='JavaScript']"),
+                "Cannot find title JavaScript",
+                5
+        );
+
+        waitForElementPresent(
+                By.xpath("//android.widget.TextView[@text='JavaScript']"),
+                "Cannot find article title",
+                15
+        );
+    }
 
 
 
@@ -317,6 +610,63 @@ public class FirstTest {
             throw new AssertionError(error_message);
         }
         return element;
+    }
+
+    protected void swipeUp (int timeOfSwipe) {
+        TouchAction action = new TouchAction(driver);
+        Dimension size = driver.manage().window().getSize();
+        int x = size.width / 2;
+        int start_y = (int) (size.height * 0.8);
+        int end_y = (int) (size.height * 0.2);
+
+        action
+                .press(x, start_y)
+                .waitAction(timeOfSwipe)
+                .moveTo(x, end_y)
+                .release()
+                .perform();
+    }
+
+    protected void swipeUpQuick()
+    {
+        swipeUp(200);
+    }
+
+    protected void swipeUpToFindElement (By by, String error_message, int max_swipes)
+    {
+        int already_swipes = 0;
+        while (driver.findElements(by).size() == 0) {
+
+            if (already_swipes > max_swipes) {
+                waitForElementPresent(by, "Cannot find element by swipping up. \n" + error_message, 0);
+                return;
+            }
+
+            swipeUpQuick();
+            ++already_swipes;
+        }
+    }
+
+    protected void swipeElementToLeft(By by, String error_message)
+    {
+        WebElement element = waitForElementPresent(
+                by,
+                error_message,
+                10);
+
+        int left_x = element.getLocation().getX();
+        int right_x = left_x + element.getSize().getWidth();
+        int upper_y = element.getLocation().getY();
+        int lower_y = upper_y + element.getSize().getHeight();
+        int middle_y = (upper_y + lower_y) / 2;
+
+        TouchAction action = new TouchAction(driver);
+        action
+                .press(right_x, middle_y)
+                .waitAction(150)
+                .moveTo(left_x, middle_y)
+                .release()
+                .perform();
     }
 }
 
