@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -33,6 +34,7 @@ public class FirstTest {
         capabilities.setCapability("appPackage","org.wikipedia");
         capabilities.setCapability("appActivity",".main.MainActivity");
         capabilities.setCapability("app","/Users/konevat/Desktop/JavaAppiumAutomation/JavaAppiumAutomation/apks/org.wikipedia.apk");
+
 
         driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
     }
@@ -559,6 +561,198 @@ public class FirstTest {
         );
     }
 
+    @Test
+    public void testAmountOfNotEmptySearch ()
+    {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Пропустить')]"),
+                "Cannot find 'Пропустить'",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@text='Поиск по Википедии']"),
+                "Cannot find search input",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@text='ENGLISH']"),
+                "Cannot button ENGLISH",
+                5
+        );
+
+        String search_line = "Linkin Park Diskography";
+        waitForElementAndSendKeys(
+                By.xpath("//android.widget.EditText[@text='Поиск по Википедии']"),
+                search_line,
+                "Cannot find search input 2",
+                10
+        );
+
+        // в новой версии приложения нет контейнеров, вмето них class='android.view.ViewGroup'
+        String search_result_locator = "//*[@resource-id='org.wikipedia:id/search_results_list']/*[@class='android.view.ViewGroup']";
+        waitForElementPresent(
+                By.xpath(search_result_locator),
+                "Cannot find anything by the request " + search_line,
+                15
+        );
+
+        int amount_of_search_results = getAmountOfElements(
+                By.xpath(search_result_locator)
+        );
+
+        Assert.assertTrue(
+                "We found a few results!",
+                amount_of_search_results > 0
+        );
+    }
+
+    @Test
+    public void testAmountOfEmptySearch()
+    {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Пропустить')]"),
+                "Cannot find 'Пропустить'",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@text='Поиск по Википедии']"),
+                "Cannot find search input",
+                5
+        );
+
+        String search_line = "fwplllk";
+        waitForElementAndSendKeys(
+                By.xpath("//android.widget.EditText[@text='Поиск по Википедии']"),
+                search_line,
+                "Cannot find search input 2",
+                10
+        );
+
+        String search_result_locator = "//*[@resource-id='org.wikipedia:id/search_results_list']/*[@class='android.view.ViewGroup']";
+        String empty_result_label = "//android.widget.TextView[@text='Ничего не найдено']";
+
+        waitForElementPresent(
+                By.xpath(empty_result_label),
+                "Cannot find result label by the request " + search_line,
+                15
+        );
+
+        assertElementNotPresent(
+                By.xpath(search_result_locator),
+                "We've found some results by request " + search_line
+        );
+    }
+
+    @Test
+    public void testChangeScreenOrientationOnSearchResults()
+    {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Пропустить')]"),
+                "Cannot find 'Пропустить'",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@text='Поиск по Википедии']"),
+                "Cannot find search input",
+                5
+        );
+
+        String search_line = "Java";
+        waitForElementAndSendKeys(
+                By.xpath("//android.widget.EditText[@text='Поиск по Википедии']"),
+                search_line,
+                "Cannot find search input 2",
+                10
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='язык программирования']"),
+                "Cannot find 'язык программирования' topic searching by " + search_line,
+                15
+        );
+
+        String title_before_rotation = waitForElementAndGetAttribute(
+                By.id("pcs-edit-section-title-description"),
+                "text",
+                "Cannot find title of article before screen rotation",
+                15
+        );
+
+        driver.rotate(ScreenOrientation.LANDSCAPE);
+
+        String title_after_rotation = waitForElementAndGetAttribute(
+                By.id("pcs-edit-section-title-description"),
+                "text",
+                "Cannot find title of article after screen rotation",
+                15
+        );
+
+        Assert.assertEquals(
+                "Article title have been changed after screen rotation",
+                title_before_rotation,
+                title_after_rotation
+        );
+
+        driver.rotate(ScreenOrientation.PORTRAIT);
+
+        String title_after_second_rotation = waitForElementAndGetAttribute(
+                By.id("pcs-edit-section-title-description"),
+                "text",
+                "Cannot find title of article after second screen rotation",
+                15
+        );
+
+        Assert.assertEquals(
+                "Article title have been changed after screen rotation",
+                title_before_rotation,
+                title_after_second_rotation
+        );
+    }
+
+    @Test
+    public void testCheckSearchArticleInBackground()
+    {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Пропустить')]"),
+                "Cannot find 'Пропустить'",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@text='Поиск по Википедии']"),
+                "Cannot find search input",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//android.widget.EditText[@text='Поиск по Википедии']"),
+                "Java",
+                "Cannot find search input 2",
+                10
+        );
+
+        // название статьи состоит из двух строк. одна "Java", вторая "язык программирования"
+        // взяла для теста вторую строку
+        waitForElementPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='язык программирования']"),
+                "Cannot find search input",
+                5
+        );
+
+        driver.runAppInBackground(3);
+        //driver.resetApp();
+
+        waitForElementPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='язык программирования']"),
+                "Cannot find article after returning from background",
+                5
+        );
+    }
+
 
 
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds)
@@ -669,6 +863,29 @@ public class FirstTest {
                 .moveTo(left_x, middle_y)
                 .release()
                 .perform();
+    }
+
+    private int getAmountOfElements(By by)
+    {
+        List elements = driver.findElements(by);
+        return elements.size();
+    }
+
+    // я использовала amount_of_elements > 2 так как в моей версии приложения выдается два результата
+    // 'Ничего не найдено' - в русской версии и английской
+    private void assertElementNotPresent(By by, String error_message)
+    {
+        int amount_of_elements = getAmountOfElements(by);
+        if (amount_of_elements > 2) {
+            String default_message = "An element '" + by.toString() + "' supposed to be not present";
+            throw new AssertionError(default_message + " " + error_message);
+        }
+    }
+
+    private String waitForElementAndGetAttribute(By by, String attribute, String error_message, long timeoutInSeconds)
+    {
+        WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
+        return element.getAttribute(attribute);
     }
 }
 
