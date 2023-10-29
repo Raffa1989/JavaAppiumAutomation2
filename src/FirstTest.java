@@ -367,9 +367,10 @@ public class FirstTest {
                 5
         );
 
+        String name_of_folder = "Learning programming";
         waitForElementAndSendKeys(
                 By.id("org.wikipedia:id/text_input"),
-                "Learning programming",
+                name_of_folder,
                 "Cannot put text into articles folder into",
                 5
         );
@@ -399,7 +400,7 @@ public class FirstTest {
         );
 
         swipeUpToFindElement(
-                By.xpath("//*[@text='Learning programming']"),
+                By.xpath("//*[@text='" + name_of_folder + "']"),
                 "Cannot find the list",
                 20
         );
@@ -484,9 +485,10 @@ public class FirstTest {
                 5
         );
 
+        String name_of_folder_2 = "Learning programming";
         waitForElementAndSendKeys(
                 By.id("org.wikipedia:id/text_input"),
-                "Learning programming",
+                name_of_folder_2,
                 "Cannot put text into articles folder into",
                 5
         );
@@ -516,7 +518,7 @@ public class FirstTest {
         );
 
         waitForElementAndClick(
-                By.xpath("//android.widget.TextView[@text='Learning programming']"),
+                By.xpath("//android.widget.TextView[@text='" + name_of_folder_2 + "']"),
                 "Cannot find list Learning programming",
                 5
         );
