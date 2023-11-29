@@ -1,99 +1,110 @@
 package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import lib.Platform;
 
 public class ArticlePageObject extends MainPageObject {
 
-    private static final String
-        TITLE = "pcs-edit-section-title-description",
-        FOOTER_ELEMENT = "//*[@text='View article in browser']",
-        SAVE_BUTTON = "//android.widget.TextView[@text='Сохранить']",
-        OPTION_ADD_TO_LIST = "//android.widget.Button[@text='Добавить в список']",
-        MY_LIST_NAME_INPUT = "org.wikipedia:id/text_input",
-        MY_LIST_OK_BUTTON = "android:id/button1",
-        CLOSE_ARTICLE_BUTTON = "//android.widget.ImageButton[@content-desc='Перейти вверх']";
+    protected static String
+            TITLE,
+            FOOTER_ELEMENT,
+            SAVE_BUTTON,
+            OPTION_ADD_TO_LIST,
+            MY_LIST_NAME_INPUT,
+            MY_LIST_OK_BUTTON,
+            CLOSE_ARTICLE_BUTTON;
 
-    public ArticlePageObject(AppiumDriver driver)
-    {
+    public ArticlePageObject(AppiumDriver driver) {
         super(driver);
     }
 
-    public WebElement waitForTitleElement()
-    {
-        return this.waitForElementPresent(By.id(TITLE), "Cannot find article title", 15);
+    public WebElement waitForTitleElement() {
+        return this.waitForElementPresent(TITLE, "Cannot find article title", 15);
     }
 
-    public String getArticleTitle()
-    {
-        WebElement title_element = waitForTitleElement();
-        return title_element.getAttribute("text");
-    }
-
-    public void swipeToFooter()
-    {
-        this.swipeUpToFindElement(
-                By.xpath(FOOTER_ELEMENT),
-                "Cannot find the end of the article",
-                20
+    public void assertArticleTitleWithoutWait() {
+        this.assertElementPresent(
+                TITLE,
+                "Cannot find article title without wait"
         );
     }
 
-    public void addArticleToMyList(String name_of_folder)
+    public String getArticleTitle() {
+        WebElement title_element = waitForTitleElement();
+        if (Platform.getInstance().isAndroid()) {
+            return title_element.getAttribute("text");
+        } else {
+            return title_element.getAttribute("name");
+        }
+    }
+
+    public void addArticlesToMySaved()
+    {
+        this.waitForElementAndClick(OPTION_ADD_TO_LIST, "Cannot find to add article to rading", 5);
+    }
+
+    public void closeArticle() {
+        this.waitForElementAndClick(
+                CLOSE_ARTICLE_BUTTON,
+                "Cannot find 'Перейти вверх'",
+                5
+        );
+    }
+
+    public void addArticleToMyList (String name_of_folder)
     {
         this.waitForElementAndClick(
-                By.xpath(SAVE_BUTTON),
+                SAVE_BUTTON,
                 "Cannot find button to open article options",
                 5
         );
 
         this.waitForElementAndClick(
-                By.xpath(OPTION_ADD_TO_LIST),
+                OPTION_ADD_TO_LIST,
                 "Cannot find button to add article",
                 5
         );
 
         this.waitForElementAndClick(
-                By.id(MY_LIST_NAME_INPUT),
+                MY_LIST_NAME_INPUT,
                 "Cannot find input field to set name",
                 5
         );
 
         this.waitForElementAndClear(
-                By.id(MY_LIST_NAME_INPUT),
+                MY_LIST_NAME_INPUT,
                 "Cannot find input field to set name 2",
                 5
         );
 
         this.waitForElementAndSendKeys(
-                By.id(MY_LIST_NAME_INPUT),
+                MY_LIST_NAME_INPUT,
                 name_of_folder,
                 "Cannot put text into articles folder into",
                 5
         );
 
         this.waitForElementAndClick(
-                By.id(MY_LIST_OK_BUTTON),
+                MY_LIST_OK_BUTTON,
                 "Cannot button OK",
                 5
         );
     }
 
-    public void closeArticle()
-    {
-        this.waitForElementAndClick(
-                By.xpath(CLOSE_ARTICLE_BUTTON),
-                "Cannot find 'Перейти вверх'",
-                5
-        );
-    }
-
-    public void assertArticleTitleWithoutWait()
-    {
-        this.assertElementPresent(
-                By.id(TITLE),
-                "Cannot find article title without wait"
-        );
+    public void swipeToFooter() {
+        if (Platform.getInstance().isAndroid()) {
+            this.swipeUpToFindElement(
+                    FOOTER_ELEMENT,
+                    "Cannot find the end of article",
+                    40
+            );
+        } else {
+            this.swipeUpTitleElementAppear(
+                    FOOTER_ELEMENT,
+                    "annot find the end of article",
+                    40
+            );
+        }
     }
 }

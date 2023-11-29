@@ -2,6 +2,7 @@ package tests;
 
 import lib.CoreTestCase;
 import lib.ui.SearchPageObject;
+import lib.ui.factories.SearchPageObjectFactory;
 import org.junit.Test;
 
 import org.openqa.selenium.WebElement;
@@ -11,7 +12,7 @@ import java.util.List;
 public class SearchTests extends CoreTestCase {
     @Test
     public void testSearch() throws InterruptedException {
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.initSearchInput();
         SearchPageObject.typeSearchLine("Java");
         SearchPageObject.waitForSearchResult("язык программирования");
@@ -21,7 +22,7 @@ public class SearchTests extends CoreTestCase {
 
     @Test
     public void testCancelSearch() throws InterruptedException {
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.initSearchInput();
         SearchPageObject.typeSearchLine("Java"); // я оставила этот шаг, так как в моей версии приложения кнопка "Назад" исчезает
         SearchPageObject.waitForCancelButtonAppear();
@@ -34,7 +35,7 @@ public class SearchTests extends CoreTestCase {
     @Test
     public void testAmountOfNotEmptySearch() {
 
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.initSearchInput();
         SearchPageObject.waitLanguageButtonAndClick();
         String search_line = "Linkin Park Diskography";
@@ -50,7 +51,7 @@ public class SearchTests extends CoreTestCase {
     @Test
     public void testAmountOfEmptySearch() {
 
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.initSearchInput();
         String search_line = "fwplllk";
         SearchPageObject.typeSearchLine(search_line);
@@ -61,7 +62,7 @@ public class SearchTests extends CoreTestCase {
     //Ex2: Создание метода (вторая часть задания)
     @Test
     public void testFieldContainsText() {
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.initSearchInput();
         SearchPageObject.testSearchInputPlaceholderText();
     }
@@ -71,7 +72,7 @@ public class SearchTests extends CoreTestCase {
     //Ex3: Тест: отмена поиска
     @Test
     public void testSearchDisappeared() {
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.initSearchInput();
         SearchPageObject.waitLanguageButtonAndClick();
         String search_line = "Moskow";

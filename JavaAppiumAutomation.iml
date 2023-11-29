@@ -10,5 +10,10 @@
     <orderEntry type="library" name="junit-4.12" level="project" />
     <orderEntry type="library" name="selenium-server-standalone-3.4.0" level="project" />
     <orderEntry type="library" name="java-client-4.1.2" level="project" />
+    <orderEntry type="library" name="javax.websocket-api-1.1" level="project" />
+    <orderEntry type="library" name="java-client-7.1.0" level="project" />
+    <orderEntry type="library" name="selenium-server-standalone-3.14.0" level="project" />
+    <orderEntry type="library" name="commons-lang3-3.12.0" level="project" />
+    <orderEntry type="library" name="java-client-7.0.0" level="project" />
   </component>
 </module>
