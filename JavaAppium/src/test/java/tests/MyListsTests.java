@@ -66,31 +66,63 @@ public class MyListsTests extends CoreTestCase
         myListsPageObject.swipeByArticleToDelete(article_title);
     }
 
-
-
-    // Домашнее задание!!!!!!!!!! Ex8
-    // Ex5: Тест: сохранение двух статей
+    // Домашнее задание!
+    // Ex17: Рефакторинг
     @Test
     public void testSaveTwoArticlesToMyList() {
 
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
+
         SearchPageObject.initSearchInput();
         SearchPageObject.typeSearchLine("Java");
         SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
 
         ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);
         ArticlePageObject.waitForTitleElement();
-        ArticlePageObject.addArticleToMyList(name_of_folder);
+        String article_title = ArticlePageObject.getArticleTitle();
 
-        MyListsPageObject MyListsPageObject = MyListsPageObjectFactory.get(driver);
-        MyListsPageObject.addArticleAboutJavaScript(name_of_folder);
+        if (Platform.getInstance().isAndroid()) {
+            ArticlePageObject.addArticleToMyList(name_of_folder);
+        } else {
+            ArticlePageObject.addArticlesToMySaved();
+        } if (Platform.getInstance().isMW()) {
+            AuthorizationPageObject Auth = new AuthorizationPageObject(driver);
+            Auth.clickAuthButton();
+            Auth.enterLoginData(login, password);
+            Auth.submitForm();
+
+            ArticlePageObject.waitForTitleElement();
+
+            assertEquals(
+                    "We are not on the same page after login",
+                    article_title,
+                    ArticlePageObject.getArticleTitle()
+            );
+
+            ArticlePageObject.addArticlesToMySaved();
+
+            SearchPageObject.initSearchInput();
+            SearchPageObject.typeSearchLine("JavaScript");
+            SearchPageObject.clickByArticleWithSubstring("High-level programming language");
+
+            ArticlePageObject.addArticlesToMySaved();
+        }
 
         NavigationUI NavigationUI = NavigationUiFactory.get(driver);
-        NavigationUI.lookAllList();
+        NavigationUI.openNavigation();
+        NavigationUI.clickMyList();
 
-        // тоже нет свайпа. ОШИБКА!!!!
+        MyListsPageObject myListsPageObject = MyListsPageObjectFactory.get(driver);
 
-        MyListsPageObject.swipeByArticleToDelete("Java");
-        MyListsPageObject.assertStayedArticleAboutJavaScript();
+        if (Platform.getInstance().isAndroid()){
+            myListsPageObject.openFolderByName(name_of_folder);
+        }
+
+        myListsPageObject.clickOnTheStarJava();
+
+        myListsPageObject.swipeByArticleToDelete(article_title);
+
+        // для проверки вместо title я использовала ссылку на статью
+        myListsPageObject.assertStayedArticleAboutJavaScriptForWebMobile();
     }
 }

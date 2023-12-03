@@ -14,6 +14,7 @@ public class MyListsPageObject extends MainPageObject {
             FOLDER_FOR_SAVED_ARTICLES,
             ELEMENT_JAVA_SCRIPT,
             NEGATIVE_BUTTON,
+            LINK_JAVA_SCRIPT,
             REMOVE_SAVED_BUTTON_JAVA;
 
 
@@ -89,5 +90,9 @@ public class MyListsPageObject extends MainPageObject {
         this.waitForElementPresent(ELEMENT_JAVA_SCRIPT, "Cannot find article about JavaScript", 0);
         this.waitForElementAndClick(ELEMENT_JAVA_SCRIPT, "Cannot find title JavaScript", 5);
         this.waitForElementPresent(ARTICLE_ABOUT_JAVA_SCRIPT, "Cannot find article title about JavaScript", 0);
+    }
+
+    public void assertStayedArticleAboutJavaScriptForWebMobile() {
+        this.waitForElementPresent(LINK_JAVA_SCRIPT, "Cannot find article about JavaScript", 0);
     }
 }
