@@ -1,65 +1,70 @@
 package lib;
 
 import io.appium.java_client.AppiumDriver;
+import io.qameta.allure.Step;
 import junit.framework.TestCase;
 import lib.ui.WelcomePageObject;
+import org.junit.After;
+import org.junit.Before;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import io.appium.java_client.AppiumDriver;
+
+import java.io.FileOutputStream;
+import java.util.Properties;
 
 
-public class CoreTestCase extends TestCase {
+public class CoreTestCase {
 
     protected RemoteWebDriver driver;
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    @Step("Run driver and session")
+    public void setUp() throws Exception {
 
-        super.setUp();
         driver = Platform.getInstance().getDriver();
+        this.createAllurePropertyFile();
         //this.rotateScreenPortrait();
         this.skipWelcomePageForIOSApp();
         this.openWikiWebPageForMobileWeb();
     }
 
-/*    @Override
-
+    @After
+    @Step("Remove driver and session")
     // Ex7*: Поворот экрана
-    protected void tearDown() throws Exception
+    public void tearDown()
     {
-        if (driver instanceof AppiumDriver){
-            AppiumDriver driver = (AppiumDriver) this.driver;
-            driver.rotate(ScreenOrientation.PORTRAIT); // Восстанавливаем экран в портретное положение
+        if (driver instanceof AppiumDriver) {
+            ((AppiumDriver<?>) driver).rotate(ScreenOrientation.PORTRAIT); // Восстанавливаем экран в портретное положение
             driver.quit();
-
-            super.tearDown();
         } else {
             System.out.println("Method tearDown() does nothing for platform" + Platform.getInstance().getPlatformVar());
         }
     }
 
- */
 
+    @Step("Rotate screen to portrait mode")
     protected void rotateScreenPortrait()
     {
         if (driver instanceof AppiumDriver){
-            AppiumDriver driver = (AppiumDriver) this.driver;
-            driver.rotate(ScreenOrientation.PORTRAIT);
+            ((AppiumDriver<?>) driver).rotate(ScreenOrientation.PORTRAIT);
         } else {
             System.out.println("Method rotateScreenPortrait() does nothing for platform" + Platform.getInstance().getPlatformVar());
         }
     }
 
 
+    @Step("Rotate screen to landscape mode")
     protected void rotateScreenLandscape()
     {
         if (driver instanceof AppiumDriver){
-            AppiumDriver driver = (AppiumDriver) this.driver;
-            driver.rotate(ScreenOrientation.LANDSCAPE);
+            ((AppiumDriver<?>) driver).rotate(ScreenOrientation.LANDSCAPE);
         } else {
             System.out.println("Method rotateScreenLandscape() does nothing for platform" + Platform.getInstance().getPlatformVar());
         }
     }
 
+    @Step("Open Wikipedia URL for Mobile Web (this method does nothing for Android and iOS")
     protected void openWikiWebPageForMobileWeb()
     {
         if (Platform.getInstance().isMW()) {
@@ -69,6 +74,7 @@ public class CoreTestCase extends TestCase {
         }
     }
 
+    @Step("Skip Welcome page screen for iOS")
     private void skipWelcomePageForIOSApp()
     {
         if(Platform.getInstance().isIOS()) {
@@ -78,7 +84,24 @@ public class CoreTestCase extends TestCase {
         }
     }
 
-    /* методо ранее не срабатывал. поэтому закоментила
+    private void createAllurePropertyFile()
+    {
+        String path = System.getProperty("allure.results.directory");
+
+        try {
+            Properties props = new Properties();
+            FileOutputStream fos = new FileOutputStream(path + "/environment.properties");
+            props.setProperty("Environment", Platform.getInstance().getPlatformVar());
+            props.store(fos, "See https://allurereport.org/docs/#_environment");
+            fos.close();
+        } catch (Exception e) {
+            System.err.println("IO problem when writing allure properties file");
+            e.printStackTrace();
+        }
+    }
+
+    /* метод ранее не срабатывал. поэтому закоментила
+    @Step("Send mobile app to background (this method does nothing for Mobile Web")
     protected void backgroundApp(int seconds)
     {
         driver.runAppInBackground(seconds);

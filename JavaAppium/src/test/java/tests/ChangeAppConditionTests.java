@@ -1,17 +1,26 @@
 package tests;
 
+import io.qameta.allure.*;
+import io.qameta.allure.junit4.DisplayName;
 import lib.CoreTestCase;
 import lib.Platform;
 import lib.ui.ArticlePageObject;
 import lib.ui.SearchPageObject;
 import lib.ui.factories.ArticlePageObjectFactory;
 import lib.ui.factories.SearchPageObjectFactory;
+import org.junit.Assert;
 import org.junit.Test;
 
 
+@Epic("Test for change app condition")
 public class ChangeAppConditionTests extends CoreTestCase
 {
     @Test
+    @Features(value = {@Feature(value = "Search"), @Feature(value = "Article")})
+    @DisplayName("Change screen orientation on search results (only Android an iOS)")
+    @Description("We change orientation the screen and compare search result")
+    @Step("Starting test testChangeScreenOrientationOnSearchResults")
+    @Severity(value = SeverityLevel.NORMAL)
     public void testChangeScreenOrientationOnSearchResults() {
 
         if (Platform.getInstance().isMW()) {
@@ -29,7 +38,7 @@ public class ChangeAppConditionTests extends CoreTestCase
         String title_after_rotation = ArticlePageObject.getArticleTitle();
         String title_after_second_rotation = ArticlePageObject.getArticleTitle();
 
-        assertEquals(
+        Assert.assertEquals(
                 "Article title have been changed after screen rotation",
                 title_before_rotation,
                 title_after_rotation
@@ -37,7 +46,7 @@ public class ChangeAppConditionTests extends CoreTestCase
 
         this.rotateScreenPortrait();
 
-        assertEquals(
+        Assert.assertEquals(
                 "Article title have been changed after screen rotation",
                 title_before_rotation,
                 title_after_second_rotation

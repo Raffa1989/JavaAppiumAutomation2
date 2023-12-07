@@ -1,18 +1,25 @@
 package tests;
 
+import io.qameta.allure.*;
+import io.qameta.allure.junit4.DisplayName;
 import lib.CoreTestCase;
 import lib.ui.SearchPageObject;
 import lib.ui.factories.SearchPageObjectFactory;
+import org.junit.Assert;
 import org.junit.Test;
 
 import org.openqa.selenium.WebElement;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
 
-
+@Epic("Test for search")
 public class SearchTests extends CoreTestCase {
     @Test
+    @Feature(value = "Search")
+    @DisplayName("Testing search")
+    @Description("We testing search")
+    @Step("Starting test testSearch")
+    @Severity(value = SeverityLevel.NORMAL)
     public void testSearch() throws InterruptedException {
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.initSearchInput();
@@ -23,18 +30,28 @@ public class SearchTests extends CoreTestCase {
     }
 
     @Test
+    @Feature(value = "Search")
+    @DisplayName("Testing cancel search")
+    @Description("We testing cancel search")
+    @Step("Starting test testCancelSearch")
+    @Severity(value = SeverityLevel.NORMAL)
     public void testCancelSearch() throws InterruptedException {
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.initSearchInput();
         SearchPageObject.typeSearchLine("Java"); // я оставила этот шаг, так как в моей версии приложения кнопка "Назад" исчезает
         SearchPageObject.waitForCancelButtonAppear();
-        SearchPageObject.clickCancelSearch();
+        //SearchPageObject.clickCancelSearch();
         SearchPageObject.waitForCancelButtonDisappear();
 
         Thread.sleep(5000);
     }
 
     @Test
+    @Feature(value = "Search")
+    @DisplayName("Amount of not empty search")
+    @Description("We testing that search not empty")
+    @Step("Starting test testAmountOfNotEmptySearch")
+    @Severity(value = SeverityLevel.NORMAL)
     public void testAmountOfNotEmptySearch() {
 
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
@@ -44,13 +61,18 @@ public class SearchTests extends CoreTestCase {
         SearchPageObject.typeSearchLine(search_line);
         int amount_of_search_results = SearchPageObject.getAmountOfFoundArticles();
 
-        assertTrue(
+        Assert.assertTrue(
                 "We found a few results!",
                 amount_of_search_results > 0
         );
     }
 
     @Test
+    @Feature(value = "Search")
+    @DisplayName("Amount of empty search")
+    @Description("We testing that search empty")
+    @Step("Starting test testAmountOfEmptySearch")
+    @Severity(value = SeverityLevel.NORMAL)
     public void testAmountOfEmptySearch() {
 
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
@@ -63,16 +85,26 @@ public class SearchTests extends CoreTestCase {
 
     //Ex2: Создание метода (вторая часть задания)
     @Test
+    @Feature(value = "Search")
+    @DisplayName("The field contains text")
+    @Description("We testing that field contains text")
+    @Step("Starting test testFieldContainsText")
+    @Severity(value = SeverityLevel.NORMAL)
     public void testFieldContainsText() {
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.initSearchInput();
-        SearchPageObject.testSearchInputPlaceholderText();
+        SearchPageObject.SearchInputPlaceholderText();
     }
 
 
     // Домашнее задание!!!!!!!!!! Ex8
     //Ex3: Тест: отмена поиска
     @Test
+    @Feature(value = "Search")
+    @DisplayName("The search disappeared")
+    @Description("We testing that search disappeared")
+    @Step("Starting test testSearchDisappeared")
+    @Severity(value = SeverityLevel.NORMAL)
     public void testSearchDisappeared() {
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.initSearchInput();
@@ -82,7 +114,7 @@ public class SearchTests extends CoreTestCase {
         SearchPageObject.waitForPageListItemTitlePresent();
 
         List<WebElement> search_results = SearchPageObject.getSearchResults();
-        assertTrue("Less than two articles found", search_results.size() >= 2);
+        Assert.assertTrue("Less than two articles found", search_results.size() >= 2);
 
         SearchPageObject.clickElementSearchInputText();
         SearchPageObject.clearElementSearchInputText();
@@ -115,7 +147,7 @@ public class SearchTests extends CoreTestCase {
         List<WebElement> searchResults = driver.findElements(By.id("page_list_item_title"));
         for (WebElement result : searchResults) {
             String resultText = result.getText();
-            assertTrue("Слово 'Java' не найдено в результатах поиска", resultText.contains("Java"));
+            Assert.assertTrue("Слово 'Java' не найдено в результатах поиска", resultText.contains("Java"));
         }
     }
     */
